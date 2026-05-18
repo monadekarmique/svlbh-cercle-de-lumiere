@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MASLD — Stéatose hépatique métabolique · Passerelle VLBH</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#8B3A62">
+<style>
+:root {
+  --magenta: #8B3A62;
+  --or: #C28D43;
+  --sable: #F5EDE4;
+  --blanc: #FFFDF9;
+  --text: #3a2a1a;
+  --gris: #f2f0ed;
+  --rouge: #c0392b;
+  --orange: #e67e22;
+  --jaune: #f1c40f;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--sable);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 80px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 18px 0 12px;
+}
+.header h1 {
+  font-size: 1.4rem;
+  color: var(--magenta);
+  font-weight: 700;
+}
+.header .subtitle {
+  font-size: 0.8rem;
+  color: var(--text);
+  opacity: 0.7;
+}
+.header .archetype {
+  font-size: 0.7rem;
+  color: var(--text);
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+/* Section card */
+.section {
+  margin-top: 24px;
+  border-top: 1px solid rgba(139, 58, 98, 0.2);
+  padding-top: 16px;
+}
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--magenta);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-icon {
+  width: 20px;
+  height: 20px;
+  background: var(--magenta);
+  color: white;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.section p {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+.section p.note {
+  font-size: 0.78rem;
+  color: var(--text);
+  opacity: 0.7;
+  margin-top: 8px;
+}
+.section p.note.marker {
+  font-weight: 600;
+  color: var(--magenta);
+  opacity: 1;
+}
+
+/* ICD table */
+.icd-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--blanc);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+.icd-table th {
+  background: var(--gris);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: left;
+  padding: 6px 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+.icd-table td {
+  font-size: 0.82rem;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--gris);
+}
+.icd-table td.system {
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-weight: 700;
+  font-size: 0.75rem;
+  width: 70px;
+}
+.icd-table td.code {
+  font-family: "SF Mono", "Fira Code", monospace;
+  color: var(--magenta);
+  font-weight: 600;
+  width: 80px;
+}
+.icd-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Progression cards */
+.progression {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+.prog-card {
+  flex: 1;
+  background: var(--blanc);
+  border-radius: 8px;
+  padding: 10px 8px;
+  text-align: center;
+  border: 2px solid var(--gris);
+  transition: border-color 0.2s;
+}
+.prog-card .stade {
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.prog-card .icd {
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.prog-card.jaune { border-color: var(--jaune); }
+.prog-card.jaune .icd { color: var(--jaune); }
+.prog-card.orange { border-color: var(--orange); }
+.prog-card.orange .icd { color: var(--orange); }
+.prog-card.rouge { border-color: var(--rouge); }
+.prog-card.rouge .icd { color: var(--rouge); }
+
+/* Mécanisme VLBH */
+.mecanisme {
+  background: var(--blanc);
+  border-radius: 8px;
+  padding: 14px;
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  white-space: pre-line;
+  border-left: 3px solid var(--magenta);
+}
+
+/* Couches */
+.couches { display: flex; flex-direction: column; gap: 6px; }
+.couche {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px;
+  background: var(--blanc);
+  border-radius: 8px;
+}
+.couche-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.couche-num.c1 { background: #c0392b; }
+.couche-num.c2 { background: #2980b9; }
+.couche-num.c3 { background: #27ae60; }
+.couche-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.couche-detail {
+  font-size: 0.75rem;
+  color: var(--text);
+  opacity: 0.7;
+}
+
+/* Grid mesures */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px 0;
+}
+.measure {
+  background: var(--blanc);
+  border-radius: 8px;
+  padding: 10px;
+}
+.measure .label {
+  font-size: 0.7rem;
+  color: var(--text);
+  opacity: 0.6;
+}
+.measure .value {
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.measure .detail {
+  font-size: 0.7rem;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+/* Protocole */
+.proto-list { display: flex; flex-direction: column; gap: 6px; }
+.proto-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.proto-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--gris);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.proto-text { font-size: 0.85rem; }
+
+/* Et après */
+.timeline { display: flex; flex-direction: column; gap: 4px; }
+.timeline-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.timeline-day {
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--magenta);
+  width: 40px;
+  flex-shrink: 0;
+}
+.timeline-action { font-size: 0.82rem; }
+
+/* Badge erreur */
+.erreur-list { display: flex; flex-direction: column; gap: 6px; }
+.erreur-row { display: flex; gap: 8px; align-items: flex-start; }
+.erreur-badge {
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+  background: var(--rouge);
+  border-radius: 4px;
+  padding: 1px 5px;
+  flex-shrink: 0;
+}
+.erreur-desc { font-size: 0.82rem; }
+
+/* Paramètres */
+.params { display: flex; flex-direction: column; gap: 3px; }
+.param-row {
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 0.75rem;
+}
+.param-key { color: var(--magenta); }
+.param-val { color: var(--text); opacity: 0.7; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .progression { flex-direction: column; }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>&#x25C8; MASLD &mdash; St&eacute;atose h&eacute;patique m&eacute;tabolique</h1>
+    <div class="subtitle">Passerelle VLBH &#x2194; M&eacute;decine &middot; Din 5 &middot; Geburah</div>
+    <div class="archetype">Cas arch&eacute;type : Blessure d&rsquo;&Acirc;me 5 Din &middot; Injustice &middot; K76.0 &middot; Masque Rigide</div>
+  </div>
+
+  <!-- Introduction -->
+  <div class="section">
+    <div class="section-title"><div class="section-icon">0</div> Introduction</div>
+    <p>Geburah gouverne le Feu et la V&eacute;sicule Biliaire (GB). Quand le Masque Rigide comprime le m&eacute;ridien LR (Foie), la stagnation du Qi h&eacute;patique produit une st&eacute;atose m&eacute;tabolique &mdash; le foie stocke ce que Din refuse de lib&eacute;rer.</p>
+    <p><strong>Cinq couches. Une seule blessure : l&rsquo;Injustice.</strong></p>
+  </div>
+
+  <!-- Mécanisme -->
+  <div class="section">
+    <div class="section-title"><div class="section-icon">1</div> M&eacute;canisme Geburah &#x2192; st&eacute;atose</div>
+    <div class="mecanisme">Geburah (Din) G&#x2212;7 &#x2192; Jugement non pardonn&eacute;
+  &#x2193;
+Masque Rigide activ&eacute; &#x2192; hypercontr&ocirc;le somatique
+  &#x2193;
+M&eacute;ridien LR (Foie) &#x2192; stagnation Qi h&eacute;patique
+  &#x2193;
+St&eacute;atose m&eacute;tabolique &#x2192; K76.0 &#x2192; MASLD</div>
+  </div>
+
+  <!-- Mesures -->
+  <div class="section">
+    <div class="section-title"><div class="section-icon">2</div> Mesures radiesth&eacute;siques</div>
+    <div class="grid-2">
+      <div class="measure"><div class="label">GB 34</div><div class="value">Gauche</div><div class="detail">Pilier gauche &middot; lign&eacute;e paternelle</div></div>
+      <div class="measure"><div class="label">Gu actifs</div><div class="value">7</div><div class="detail">Charge D5 Geburah</div></div>
+      <div class="measure"><div class="label">SLM</div><div class="value">27%</div><div class="detail">Contraction active</div></div>
+      <div class="measure"><div class="label">Masque</div><div class="value">Rigide</div><div class="detail">Blessure d&rsquo;Injustice</div></div>
+      <div class="measure"><div class="label">G&eacute;n&eacute;ration</div><div class="value">G&#x2212;7</div><div class="detail">~XIXe si&egrave;cle</div></div>
+      <div class="measure"><div class="label">SA 7</div><div class="value">142%</div><div class="detail">Surcharge karmique active</div></div>
+      <div class="measure"><div class="label">pH surr&eacute;nale</div><div class="value">6.8 rouge</div><div class="detail">Cortisol chronique &#x2191;</div></div>
+      <div class="measure"><div class="label">Pierre</div><div class="value">Labradorite 53t</div><div class="detail">Bouclier Geburah</div></div>
+    </div>
+  </div>
+
+  <!-- Codification ICD -->
+  <div class="section">
+    <div class="section-title"><div class="section-icon">3</div> Codification ICD</div>
+    <table class="icd-table">
+      <thead><tr><th>Syst&egrave;me</th><th>Code</th><th>Label</th></tr></thead>
+      <tbody>
+        <tr><td class="system">ICD-9</td><td class="code">571.8</td><td>St&eacute;atose h&eacute;patique</td></tr>
+        <tr><td class="system">ICD-10</td><td class="code">K76.0</td><td>St&eacute;atose graisseuse</td></tr>
+        <tr><td class="system">ICD-10</td><td class="code">K75.81</td><td>NASH (st&eacute;ato-h&eacute;patite)</td></tr>
+        <tr><td class="system">ICD-11</td><td class="code">DB92.0</td><td>MASLD</td></tr>
+        <tr><td class="system">ICD-11</td><td class="code">DB92.1</td><td>MASH</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Progression fibrotique -->
+  <div class="section">
+    <div class="section-title"><div class="section-icon">4</div> Progression fibrotique</div>
+    <div class="progression">
+      <div class="prog-card jaune"><div class="stade">Fibrose pr&eacute;coce</div><div class="icd">K74.01</div></div>
+      <div class="prog-card orange"><div class="stade">Fibrose avanc&eacute;e</div><div class="icd">K74.02</div></div>
+      <div class="prog-card rouge"><div class="stade">Cirrhose</div><div class="icd">K74.60</div></div>
+    </div>
+    <p class="note marker">K76.0 r&eacute;fractaire aux mesures di&eacute;t&eacute;tiques = marqueur VLBH. La st&eacute;atose traduit le refus de Geburah de lib&eacute;rer la charge karmique.</p>
+  </div>
+
+  <!-- Architecture 5 couches -->
+  <div class="section">
+    <div class="section-title"><div class="section-icon">5</div> Architecture passerelle &mdash; 5 couches</div>
+    <div class="couches">
+      <div class="couche"><div class="couche-num c1">1</div><div><div class="couche-label">Sephiroth multig&eacute;n&eacute;rationnel</div><div class="couche-detail">Geburah (Din) &middot; Pilier gauche &middot; SA 7 = 142 % &middot; G&#x2212;7</div></div></div>
+      <div class="couche"><div class="couche-num c2">2</div><div><div class="couche-label">SVLBHPanel &mdash; hDOM</div><div class="couche-detail">SLA/SLSA &middot; Octa&egrave;dre &middot; Masque Rigide actif</div></div></div>
+      <div class="couche"><div class="couche-num c3">3</div><div><div class="couche-label">MTC &mdash; Foie / V&eacute;sicule Biliaire</div><div class="couche-detail">LR &middot; GB &middot; Qi contraint &#x2192; stagnation Bois/Feu</div></div></div>
+      <div class="couche"><div class="couche-num" style="background:#e67e22">4</div><div><div class="couche-label">Neurologie occidentale</div><div class="couche-detail">G57.3 nerf fibulaire &middot; compression r&eacute;tinaculaire</div></div></div>
+      <div class="couche"><div class="couche-num c1">5</div><div><div class="couche-label">M&eacute;decine Occidentale ICD-10/11</div><div class="couche-detail">K76.0 st&eacute;atose &middot; K75.81 NASH &middot; M22.2 &middot; M35.9</div></div></div>
+    </div>
+  </div>
+
+  <!-- Sclérose -->
+  <div class="section">
+    <div class="section-title"><div class="section-icon">6</div> Scl&eacute;rose tissulaire &mdash; signature Din</div>
+    <p>La scl&eacute;rose est le stade terminal de la rigidification Geburah. Le tissu conjonctif perd son &eacute;lasticit&eacute; &mdash; miroir histologique du Masque Rigide.</p>
+    <div class="progression">
+      <div class="prog-card jaune"><div class="stade">1. Inflammation</div><div class="icd">M79.3</div></div>
+      <div class="prog-card orange"><div class="stade">2. Fibrose</div><div class="icd">M76.5</div></div>
+      <div class="prog-card rouge"><div class="stade">3. Scl&eacute;rose</div><div class="icd">M35.9</div></div>
+    </div>
+  </div>
+
+  <!-- Accumulations historiques -->
+  <div class="section">
+    <div class="section-title"><div class="section-icon">7</div> Accumulations historiques &mdash; SA 7 = 142 %</div>
+    <p>La Sur-&Acirc;me 7 porte une surcharge de 142 % &mdash; accumulation transgn. sur 7 g&eacute;n&eacute;rations. L&rsquo;injustice originelle (G&#x2212;7, ~XIXe s.) n&rsquo;a jamais &eacute;t&eacute; reconnue.</p>
+    <div class="grid-2" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="measure"><div class="label">G&#x2212;7</div><div class="value">20%</div><div class="detail">Injustice originelle</div></div>
+      <div class="measure"><div class="label">G&#x2212;6</div><div class="value">18%</div><div class="detail">Silence impos&eacute;</div></div>
+      <div class="measure"><div class="label">G&#x2212;5</div><div class="value">22%</div><div class="detail">Masque h&eacute;rit&eacute;</div></div>
+      <div class="measure"><div class="label">G&#x2212;4</div><div class="value">19%</div><div class="detail">Somatisation</div></div>
+      <div class="measure"><div class="label">G&#x2212;3</div><div class="value">21%</div><div class="detail">Fibrose</div></div>
+      <div class="measure"><div class="label">G&#x2212;2</div><div class="value">23%</div><div class="detail">Compression nerf.</div></div>
+      <div class="measure"><div class="label">G&#x2212;1</div><div class="value">19%</div><div class="detail">H&eacute;ritage actif</div></div>
+    </div>
+    <p class="note marker">Total cumul&eacute; : 142 % &#x2192; SA 7 en surcharge karmique active</p>
+  </div>
+
+  <!-- Protocole -->
+  <div class="section">
+    <div class="section-title"><div class="section-icon">8</div> Protocole complet</div>
+    <div class="proto-list">
+      <div class="proto-step"><div class="proto-num">1</div><div class="proto-text">Identifier la lat&eacute;ralit&eacute; &mdash; genou G ou D &#x2192; pilier / lign&eacute;e</div></div>
+      <div class="proto-step"><div class="proto-num">2</div><div class="proto-text">Mesure GB 34 &mdash; charge Geburah &mdash; v&eacute;rifier SLM</div></div>
+      <div class="proto-step"><div class="proto-num">3</div><div class="proto-text">Cube G&#x2212;7 &mdash; patient z&eacute;ro lign&eacute;e &mdash; acte d&rsquo;injustice originel</div></div>
+      <div class="proto-step"><div class="proto-num">4</div><div class="proto-text">Octa&egrave;dre &mdash; lib&eacute;ration g&eacute;om&eacute;trique Geburah &#x2192; Chesed</div></div>
+      <div class="proto-step"><div class="proto-num">5</div><div class="proto-text">D&eacute;sintrication Gu karmiques &times; 7 &mdash; D5 Geburah</div></div>
+      <div class="proto-step"><div class="proto-num">6</div><div class="proto-text">Lib&eacute;ration du Masque Rigide &mdash; r&eacute;tinaculum lat&eacute;ral</div></div>
+      <div class="proto-step"><div class="proto-num">7</div><div class="proto-text">Chromoth&eacute;rapie surr&eacute;nale &mdash; pH 6.8 rouge &#x2192; &eacute;quilibre cortisol</div></div>
+      <div class="proto-step"><div class="proto-num">8</div><div class="proto-text">Labradorite blanche 53 t &mdash; bouclier Geburah &#x2192; neutralisation</div></div>
+      <div class="proto-step"><div class="proto-num">9</div><div class="proto-text">V&eacute;rifier GB 34 + mobilit&eacute; patellaire post-lib&eacute;ration</div></div>
+    </div>
+  </div>
+
+  <!-- Cornelia 48 -->
+  <div class="section">
+    <div class="section-title"><div class="section-icon">!</div> Cas Cornelia 48 &mdash; erreurs 2h35</div>
+    <p><strong>Erreurs rencontr&eacute;es &mdash; session nocturne 2h35</strong></p>
+    <div class="erreur-list">
+      <div class="erreur-row"><span class="erreur-badge">E1</span><span class="erreur-desc">SA 7 &agrave; 142 % d&eacute;tect&eacute;e hors plage standard</span></div>
+      <div class="erreur-row"><span class="erreur-badge">E2</span><span class="erreur-desc">Octa&egrave;dre Geburah instable &mdash; charge exc&egrave;de la capacit&eacute;</span></div>
+      <div class="erreur-row"><span class="erreur-badge">E3</span><span class="erreur-desc">Nerf fibulaire en compression active pendant d&eacute;sintrication</span></div>
+      <div class="erreur-row"><span class="erreur-badge">E4</span><span class="erreur-desc">Rebond scl&eacute;rotique post-lib&eacute;ration &mdash; re-rigidification</span></div>
+      <div class="erreur-row"><span class="erreur-badge">E5</span><span class="erreur-desc">Cube G&#x2212;7 r&eacute;siste &mdash; patient z&eacute;ro incomplet</span></div>
+    </div>
+    <p class="note marker">Correction : stabiliser SA 7 avant d&eacute;sintrication. Doubler le maintien Octa&egrave;dre.</p>
+  </div>
+
+  <!-- Et après -->
+  <div class="section">
+    <div class="section-title"><div class="section-icon">&#x2728;</div> Et apr&egrave;s ?</div>
+    <p><strong>Suivi post-lib&eacute;ration Geburah/Din</strong></p>
+    <div class="timeline">
+      <div class="timeline-row"><span class="timeline-day">J+1</span><span class="timeline-action">V&eacute;rifier mobilit&eacute; patellaire lat&eacute;rale</span></div>
+      <div class="timeline-row"><span class="timeline-day">J+3</span><span class="timeline-action">Contr&ocirc;le GB 34 &mdash; charge Geburah &lt; 10 %</span></div>
+      <div class="timeline-row"><span class="timeline-day">J+7</span><span class="timeline-action">SA 7 doit redescendre sous 100 %</span></div>
+      <div class="timeline-row"><span class="timeline-day">J+14</span><span class="timeline-action">V&eacute;rifier absence de rebond scl&eacute;rotique</span></div>
+      <div class="timeline-row"><span class="timeline-day">J+21</span><span class="timeline-action">Int&eacute;gration du pardon Chesed &#x2192; Masque se dissout</span></div>
+      <div class="timeline-row"><span class="timeline-day">J+30</span><span class="timeline-action">SLM global &#x2192; am&eacute;lioration M22.2 / G57.3 / K76.0</span></div>
+    </div>
+    <p class="note">Si le Masque Rigide persiste apr&egrave;s J+30 : v&eacute;rifier une deuxi&egrave;me lign&eacute;e porteuse (pilier droit).</p>
+  </div>
+
+  <!-- Paramètres -->
+  <div class="section">
+    <div class="section-title"><div class="section-icon">&#x2699;</div> Param&egrave;tres SVLBHPanel</div>
+    <div class="params">
+      <div class="param-row"><span class="param-key">n&oelig;ud.blessure</span> : <span class="param-val">injustice</span></div>
+      <div class="param-row"><span class="param-key">n&oelig;ud.masque</span> : <span class="param-val">rigide</span></div>
+      <div class="param-row"><span class="param-key">n&oelig;ud.sephirah</span> : <span class="param-val">geburah_din_5</span></div>
+      <div class="param-row"><span class="param-key">n&oelig;ud.solide</span> : <span class="param-val">octa&egrave;dre</span></div>
+      <div class="param-row"><span class="param-key">n&oelig;ud.pilier</span> : <span class="param-val">gauche_s&eacute;v&eacute;rit&eacute;</span></div>
+      <div class="param-row"><span class="param-key">n&oelig;ud.type_gu</span> : <span class="param-val">karmique_rigide | transgn._jugement</span></div>
+      <div class="param-row"><span class="param-key">n&oelig;ud.icd10</span> : <span class="param-val">M22.2 | M76.5 | G57.3 | K76.0 | K75.81</span></div>
+      <div class="param-row"><span class="param-key">n&oelig;ud.pierre</span> : <span class="param-val">labradorite_blanche_53t</span></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
