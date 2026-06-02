@@ -104,12 +104,21 @@ struct ChronoFuTab: View {
             .onReceive(timer) { now = $0 }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    NavigationLink {
-                        LingguiBafaView()
-                    } label: {
-                        Text("灵龟八法")
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundColor(Color(hex: "#185FA5"))
+                    HStack(spacing: 14) {
+                        NavigationLink {
+                            LectureFatigueView()
+                        } label: {
+                            Text("Fatigue")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(Color(hex: "#BD3482"))
+                        }
+                        NavigationLink {
+                            LingguiBafaView()
+                        } label: {
+                            Text("灵龟八法")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(Color(hex: "#185FA5"))
+                        }
                     }
                 }
             }

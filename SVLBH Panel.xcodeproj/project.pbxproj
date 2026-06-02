@@ -100,6 +100,7 @@
 		R3F5Y5T3M0VIEW0000001 /* ReferenceSystemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = R3F5Y5T3M0VIEW0000002 /* ReferenceSystemView.swift */; };
 		T0RE5HTML0AB00000000001 /* tores-lumiere.html in Resources */ = {isa = PBXBuildFile; fileRef = T0RE5HTML0AB00000000002 /* tores-lumiere.html */; };
 		T0RE5LUM1E7AB00000000001 /* ToresLumiereTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = T0RE5LUM1E7AB00000000002 /* ToresLumiereTab.swift */; };
+		LECFAT1GUE0VIEW000000001 /* LectureFatigueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = LECFAT1GUE0VIEW000000002 /* LectureFatigueView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -218,6 +219,7 @@
 		R3F5Y5T3M0VIEW0000002 /* ReferenceSystemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferenceSystemView.swift; sourceTree = "<group>"; };
 		T0RE5HTML0AB00000000002 /* tores-lumiere.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "tores-lumiere.html"; sourceTree = "<group>"; };
 		T0RE5LUM1E7AB00000000002 /* ToresLumiereTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToresLumiereTab.swift; sourceTree = "<group>"; };
+		LECFAT1GUE0VIEW000000002 /* LectureFatigueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LectureFatigueView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -416,6 +418,7 @@
 				199EC7AD8891869EA327CFE6 /* ChronoFuSidePanel.swift */,
 				41D0D4AAD3558AABC6A4D078 /* SessionDecouverteView.swift */,
 				996375378AA884EF1B045ED1 /* LingguiBafaView.swift */,
+				LECFAT1GUE0VIEW000000002 /* LectureFatigueView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -666,6 +669,7 @@
 				4ACF1D2F09150639D5DA2CF3 /* SessionDecouverteView.swift in Sources */,
 				3275603C87AD724E3A0F8357 /* PDLHotlineSidebarView.swift in Sources */,
 				366F17B9DE643F0512DEE7A0 /* LingguiBafaView.swift in Sources */,
+				LECFAT1GUE0VIEW000000001 /* LectureFatigueView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
