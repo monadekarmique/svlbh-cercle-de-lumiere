@@ -8,6 +8,17 @@ import SwiftUI
 struct PDLDiagnosticView: View {
     @EnvironmentObject var elementManager: FiveElementsManager
     @State private var currentBilan: BilanEnergetique?
+    @State private var selectedHistoryID: UUID?
+
+    /// Bilan affiché dans le radar : édition en cours > sélection historique > dernier sauvegardé.
+    private var displayedBilan: BilanEnergetique? {
+        if let bilan = currentBilan { return bilan }
+        if let id = selectedHistoryID,
+           let bilan = elementManager.bilans.first(where: { $0.id == id }) {
+            return bilan
+        }
+        return elementManager.bilans.last
+    }
 
     var body: some View {
         GeometryReader { geo in
@@ -22,11 +33,12 @@ struct PDLDiagnosticView: View {
     private var portraitLayout: some View {
         ScrollView {
             VStack(spacing: 24) {
-                if let bilan = currentBilan ?? elementManager.bilans.last {
+                if let bilan = displayedBilan {
                     PDLEnergyRadarChart(bilan: bilan).frame(height: 300).padding()
                 } else {
                     emptyStateView
                 }
+                if currentBilan == nil && !elementManager.bilans.isEmpty { addBilanButton }
                 if currentBilan != nil { elementSlidersSection }
                 if !elementManager.bilans.isEmpty { recommendationsSection }
                 historySection
@@ -40,6 +52,7 @@ struct PDLDiagnosticView: View {
             // Colonne gauche — sliders / recommandations / historique (scrollables)
             ScrollView {
                 VStack(spacing: 16) {
+                    if currentBilan == nil && !elementManager.bilans.isEmpty { addBilanButton }
                     if currentBilan != nil { elementSlidersSection }
                     if !elementManager.bilans.isEmpty { recommendationsSection }
                     historySection
@@ -50,7 +63,7 @@ struct PDLDiagnosticView: View {
 
             // Colonne droite — artefact radar (sticky)
             VStack {
-                if let bilan = currentBilan ?? elementManager.bilans.last {
+                if let bilan = displayedBilan {
                     PDLEnergyRadarChart(bilan: bilan)
                         .aspectRatio(1, contentMode: .fit)
                         .padding()
@@ -61,6 +74,24 @@ struct PDLDiagnosticView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+    }
+
+    private var addBilanButton: some View {
+        Button {
+            withAnimation {
+                selectedHistoryID = nil
+                currentBilan = elementManager.creerNouveauBilan()
+            }
+        } label: {
+            Label("Nouveau bilan", systemImage: "plus.circle.fill")
+                .font(.headline)
+                .padding(.horizontal, 16).padding(.vertical, 10)
+                .frame(maxWidth: .infinity)
+                .background(Color.accentColor.opacity(0.15))
+                .foregroundStyle(Color.accentColor)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
     }
 
     private var emptyStateView: some View {
@@ -124,7 +155,15 @@ struct PDLDiagnosticView: View {
                 Text("Aucun historique").foregroundStyle(.secondary)
             } else {
                 ForEach(elementManager.bilans.suffix(5).reversed()) { bilan in
-                    PDLBilanHistoryRow(bilan: bilan)
+                    Button {
+                        withAnimation {
+                            currentBilan = nil
+                            selectedHistoryID = bilan.id
+                        }
+                    } label: {
+                        PDLBilanHistoryRow(bilan: bilan, isSelected: selectedHistoryID == bilan.id)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -253,6 +292,7 @@ struct PDLRecommendationCard: View {
 
 struct PDLBilanHistoryRow: View {
     let bilan: BilanEnergetique
+    var isSelected: Bool = false
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -267,6 +307,9 @@ struct PDLBilanHistoryRow: View {
                 }
             }
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 8).padding(.horizontal, 8)
+        .background(isSelected ? Color.accentColor.opacity(0.12) : Color.clear)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .contentShape(Rectangle())
     }
 }

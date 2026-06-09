@@ -5,10 +5,16 @@ import SwiftUI
 
 struct ProvocationView: View {
     @EnvironmentObject var session: SessionState
-    /// 5 sélections permanentes (gauche)
-    @State private var permanentSelections: [Int?] = [nil, nil, nil, nil, nil]
-    /// 14 sélections temporaires (droite)
-    @State private var temporarySelections: [Int?] = Array(repeating: nil, count: 14)
+    @EnvironmentObject var tracker: SessionTracker
+    /// Sélections permanentes (gauche) — uniquement les slots remplis (gris bulk-supprimés 2026-05-08).
+    @State private var permanentSelections: [Int] = []
+    /// Sélections temporaires (droite) — uniquement les slots remplis.
+    @State private var temporarySelections: [Int] = []
+
+    @State private var addPermanentSheet = false
+    @State private var addTemporarySheet = false
+    @State private var newPermanentPick: Int? = nil
+    @State private var newTemporaryPick: Int? = nil
 
     var body: some View {
         VStack(spacing: 12) {
@@ -35,7 +41,7 @@ struct ProvocationView: View {
             .padding(.top, 8)
 
             HStack(alignment: .top, spacing: 10) {
-                // ── Colonne gauche : 3 × Permanentes ──
+                // ── Colonne gauche : Permanentes (dynamiques) ──
                 VStack(spacing: 8) {
                     HStack {
                         Text("PERMANENTES (48)")
@@ -47,18 +53,29 @@ struct ProvocationView: View {
                         Spacer()
                     }
 
-                    ForEach(0..<5, id: \.self) { idx in
+                    ForEach(permanentSelections.indices, id: \.self) { idx in
                         EnergyPickerSlot(
                             slotIndex: idx,
-                            selection: $permanentSelections[idx],
+                            selection: Binding(
+                                get: { permanentSelections[safe: idx] },
+                                set: { newVal in
+                                    if let v = newVal { permanentSelections[idx] = v }
+                                    else { permanentSelections.remove(at: idx) }
+                                }
+                            ),
                             energies: ParasiteEnergyData.permanentes,
                             type: .permanent
                         )
                     }
+
+                    addEnergyButton(type: .permanent) {
+                        newPermanentPick = nil
+                        addPermanentSheet = true
+                    }
                 }
                 .frame(maxWidth: .infinity)
 
-                // ── Colonne droite : 5 × Temporaires ──
+                // ── Colonne droite : Temporaires (dynamiques) ──
                 VStack(spacing: 8) {
                     HStack {
                         Text("TEMPORAIRES (19)")
@@ -70,19 +87,76 @@ struct ProvocationView: View {
                         Spacer()
                     }
 
-                    ForEach(0..<14, id: \.self) { idx in
+                    ForEach(temporarySelections.indices, id: \.self) { idx in
                         EnergyPickerSlot(
                             slotIndex: idx,
-                            selection: $temporarySelections[idx],
+                            selection: Binding(
+                                get: { temporarySelections[safe: idx] },
+                                set: { newVal in
+                                    if let v = newVal { temporarySelections[idx] = v }
+                                    else { temporarySelections.remove(at: idx) }
+                                }
+                            ),
                             energies: ParasiteEnergyData.temporaires,
                             type: .temporary
                         )
+                    }
+
+                    addEnergyButton(type: .temporary) {
+                        newTemporaryPick = nil
+                        addTemporarySheet = true
                     }
                 }
                 .frame(maxWidth: .infinity)
             }
             .padding(.horizontal, 12)
         }
+        .sheet(isPresented: $addPermanentSheet, onDismiss: {
+            if let v = newPermanentPick { permanentSelections.append(v) }
+            newPermanentPick = nil
+        }) {
+            EnergyPickerSheet(
+                selection: $newPermanentPick,
+                energies: ParasiteEnergyData.permanentes,
+                type: .permanent,
+                tracker: tracker
+            )
+        }
+        .sheet(isPresented: $addTemporarySheet, onDismiss: {
+            if let v = newTemporaryPick { temporarySelections.append(v) }
+            newTemporaryPick = nil
+        }) {
+            EnergyPickerSheet(
+                selection: $newTemporaryPick,
+                energies: ParasiteEnergyData.temporaires,
+                type: .temporary,
+                tracker: tracker
+            )
+        }
+    }
+
+    private func addEnergyButton(type: EnergyType, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 6) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.system(size: 14))
+                Text("Ajouter une énergie")
+                    .font(.caption.bold())
+                Spacer()
+            }
+            .foregroundColor(type.color)
+            .padding(.horizontal, 8).padding(.vertical, 8)
+            .frame(maxWidth: .infinity)
+            .background(type.color.opacity(0.10))
+            .cornerRadius(8)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+private extension Array {
+    subscript(safe index: Int) -> Element? {
+        indices.contains(index) ? self[index] : nil
     }
 }
 
